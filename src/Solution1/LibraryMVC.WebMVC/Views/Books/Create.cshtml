@@ -1,0 +1,53 @@
+﻿@model LibraryMVC.WebMVC.Models.BookEditViewModel
+@{
+    ViewData["Title"] = "Нове видання";
+}
+
+<h2>Створити видання</h2>
+
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Annotation" class="form-label"></label>
+        <textarea asp-for="Annotation" class="form-control" rows="4"></textarea>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label asp-for="PublicationYear" class="form-label"></label>
+            <input asp-for="PublicationYear" class="form-control" />
+        </div>
+        <div class="col-md-4 mb-3">
+            <label asp-for="Publisher" class="form-label"></label>
+            <input asp-for="Publisher" class="form-control" />
+        </div>
+        <div class="col-md-4 mb-3">
+            <label asp-for="Isbn" class="form-label"></label>
+            <input asp-for="Isbn" class="form-control" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CoverFile" class="form-label"></label>
+        <input asp-for="CoverFile" type="file" class="form-control" accept=".jpg,.jpeg,.png,.gif,.webp,.pdf" />
+        <div class="form-text">У базі збережеться посилання на файл, а не сам файл. До 5 МБ.</div>    
+        <span asp-validation-for="CoverFile" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="SelectedAuthorIds" class="form-label"></label>
+        <select asp-for="SelectedAuthorIds" asp-items="Model.AuthorsOptions" class="form-select" multiple size="6"></select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="SelectedFeatureIds" class="form-label"></label>
+        <select asp-for="SelectedFeatureIds" asp-items="Model.FeaturesOptions" class="form-select" multiple size="5"></select>
+    </div> 
+
+    <button type="submit" class="btn btn-primary">Зберегти</button>
+    <a asp-action="Index" class="btn btn-link">Назад</a>
+</form>

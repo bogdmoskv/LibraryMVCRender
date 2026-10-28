@@ -1,0 +1,18 @@
+﻿@model LibraryMVC.Domain.Entities.Book
+
+@{
+    ViewData["Title"] = "Видалити видання";
+}
+
+<h2>Видалити видання?</h2>
+
+<p>
+    <strong>@Model.Title</strong>
+    (@Model.PublicationYear)
+</p>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Видалити</button>
+    <a asp-action="Index" class="btn btn-link">Скасувати</a>
+</form>

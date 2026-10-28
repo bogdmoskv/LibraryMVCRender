@@ -1,0 +1,26 @@
+﻿@model LibraryMVC.Domain.Entities.Loan
+
+@{
+    ViewData["Title"] = "Видача";
+}
+
+<h2>Видача №@Model.Id</h2>
+
+<dl class="row">
+    <dt class="col-sm-3">Книга</dt>
+    <dt class="col-sm-9">@Model.Book?.Title</dt>
+
+    <dt class="col-sm-3">Читач</dt>
+    <dt class="col-sm-9">@Model.Reader?.FullName</dt>
+
+    <dt class="col-sm-3">Дата видачі</dt>
+    <dt class="col-sm-9">@Model.LoanDate.ToString("d")</dt>
+
+    <dt class="col-sm-3">Повернути до</dt>
+    <dt class="col-sm-9">@(Model.DueDate?.ToString("d") ?? "-")</dt>
+
+    <dt class="col-sm-3">Повернення</dt>
+    <dt class="col-sm-9">@(Model.ReturnDate?.ToString("d") ?? "на руках")</dt>
+</dl>
+
+<a asp-action="Edit" asp-route-id="@Model.Id">Змінити</a> | <a asp-action="Index">Назад</a>

@@ -1,0 +1,41 @@
+﻿@model IEnumerable<LibraryMVC.Domain.Entities.Reader>
+
+@{
+    ViewData["Title"] = "Читачі";
+}
+
+<h2>Читачі</h2>
+
+<p>
+    <a class="btn btn-primary" asp-action="Create">Створити</a>
+</p>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover align-middle">
+        <thead>
+            <tr>
+                <th>П.І.Б.</th>
+                <th>Факультет</th>
+                <th>Кафедра</th>
+                <th>Посада</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.FullName</td>
+                    <td>@item.Faculty</td>
+                    <td>@item.Department</td>
+                    <td>@item.Position</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.Id">Деталі</a> |
+                        <a asp-action="Edit" asp-route-id="@item.Id">Змінити</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Видалити</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

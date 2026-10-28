@@ -1,0 +1,75 @@
+﻿@{
+    ViewData["Title"] = "Головна";
+}
+
+<div class="library-hero mb-4">
+    <h1 class="display-6 mb-2">Кафедральна бібліотека</h1>
+    <p class="lead">Облік фонду, авторів, читачів і видач</p>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-xl-3">
+        <div class="card stat-card">
+            <div class="stat-accent"></div>
+            <div class="card-body text-center">
+                <div class="stat-value">@ViewBag.BooksCount</div>
+                <div class="stat-label">Видань у фонді</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="card stat-card">
+            <div class="stat-accent"></div>
+            <div class="card-body text-center">
+                <div class="stat-value">@ViewBag.AuthorsCount</div>
+                <div class="stat-label">Авторів</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="card stat-card">
+            <div class="stat-accent"></div>
+            <div class="card-body text-center">
+                <div class="stat-value">@ViewBag.ReadersCount</div>
+                <div class="stat-label">Читачів</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="card stat-card">
+            <div class="stat-accent"></div>
+            <div class="card-body text-center">
+                <div class="stat-value">@ViewBag.ActiveLoansCount</div>
+                <div class="stat-label">Активних видач</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h4 class="mb-3">Швидкі дії</h4>
+<div class="row g-3">
+    <div class="col-sm-6 col-lg-3">
+        <a class="action-card" asp-controller="Books" asp-action="Create">
+            <div class="action-title">Додати видання</div>
+            <p class="action-hint">Новий запис до фонду</p>
+        </a>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <a class="action-card" asp-controller="Authors" asp-action="Create">
+            <div class="action-title">Додати автора</div>
+            <p class="action-hint">Картка автора видання</p>
+        </a>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <a class="action-card" asp-controller="Readers" asp-action="Create">
+            <div class="action-title">Додати читача</div>
+            <p class="action-hint">Облік користувачів фонду</p>
+        </a>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <a class="action-card" asp-controller="Loans" asp-action="Create">
+            <div class="action-title">Оформити видачу</div>
+            <p class="action-hint">Видача книги читачеві</p>
+        </a>
+    </div>
+</div>

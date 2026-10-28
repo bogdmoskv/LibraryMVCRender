@@ -1,0 +1,48 @@
+﻿@model LibraryMVC.Domain.Entities.Book
+
+@{
+    ViewData["Title"] = "Видання";
+}
+
+<h2>@Model.Title</h2>
+
+<dl class="row">
+    <dt class="col-sm-3">Анотація</dt>
+    <dd class="col-sm-9">@Model.Annotation</dd>
+
+    <dt class="col-sm-3">Рік</dt>
+    <dd class="col-sm-9">@Model.PublicationYear</dd>
+
+    <dt class="col-sm-3">Видавець</dt>
+    <dd class="col-sm-9">@(Model.Publisher ?? "-")</dd>
+
+    <dt class="col-sm-3">ISBN</dt>
+    <dd class="col-sm-9">@(Model.Isbn ?? "-")</dd>
+
+    <dt class="col-sm-3">Файл (посилання)</dt>
+    <dd class="col-sm-9">
+        @if (string.IsNullOrEmpty(Model.CoverPath))
+        {
+            <span>-</span>
+        }
+        else
+        {
+            <a href="@Model.CoverPath" target="_blank">@Model.CoverPath</a>
+            @if (!Model.CoverPath.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
+            {
+                <div class="mt-2">
+                    <img src="@Model.CoverPath" alt="Обкладинка" class="img-thumbnail" style="max-height: 240px;" />
+                </div>
+            }
+        }
+    </dd>
+
+    <dt class="col-sm-3">Автори</dt>
+    <dd class="col-sm-9">@string.Join(", ", Model.Authors.Select(a=>a.FullName))</dd>
+
+    <dt class="col-sm-3">Кваліфікаційні ознаки</dt>
+    <dd class="col-sm-9">@string.Join(", ", Model.Features.Select(a => a.Name))</dd>
+</dl>
+
+<a asp-action="Edit" asp-route-id="@Model.Id">Змінити</a>
+<a asp-action="Index" class="">Назад</a>

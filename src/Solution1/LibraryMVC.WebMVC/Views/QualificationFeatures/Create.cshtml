@@ -1,0 +1,22 @@
+﻿@model LibraryMVC.WebMVC.Models.FeatureForm
+
+@{
+    ViewData["Title"] = "Нова ознака";
+}
+
+<h2>Створити ознаку</h2>
+
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label">Назва</label>
+        <input asp-for="Name" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label">Опис</label>
+        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Зберегти</button>
+    <a asp-action="Index" class="btn btn-link">Назад</a>
+</form>

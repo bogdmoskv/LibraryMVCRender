@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="LibraryMVC.Domain/LibraryMVC.Domain.csproj" />
+  <Project Path="LibraryMVC.Infrastructure/LibraryMVC.Infrastructure.csproj" Id="ba0c9009-dd5a-4537-926e-bf4324cb4bc7" />
+  <Project Path="LibraryMVC.WebMVC/LibraryMVC.WebMVC.csproj" Id="2762bbe9-c759-4c86-a371-d9f31cc962d9" />
+</Solution>

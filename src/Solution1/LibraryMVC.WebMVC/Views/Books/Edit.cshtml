@@ -1,0 +1,72 @@
+﻿@model LibraryMVC.WebMVC.Models.BookEditViewModel
+
+@{
+    ViewData["Title"] = "Редагування видання";
+}
+
+<h2>Редагувати видання</h2>
+
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="Id"  />
+    <input type="hidden" asp-for="CoverPath" />
+
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Annotation"></label>
+        <textarea asp-for="Annotation" class="form-control" rows="4"></textarea>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label asp-for="PublicationYear" class="form-label"></label>
+            <input asp-for="PublicationYear" class="form-control" />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label asp-for="Publisher" class="form-label"></label>
+            <input asp-for="Publisher" class="form-control" />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label asp-for="Isbn" class="form-label"></label>
+            <input asp-for="Isbn" class="form-control" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CoverFile" class="form-label"></label>
+        @if (!string.IsNullOrEmpty(Model.CoverPath))
+        {
+            <div class="mb-2">
+                <div class="form-text">
+                    Зараз:
+                    <a href="@Model.CoverPath" target="_blank">@Model.CoverPath</a>
+                    @if (!Model.CoverPath.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
+                    {
+                        <img src="@Model.CoverPath" alt="Обкладинка" class="img-thumbnail mt-2" style="max-height: 160px;"/>
+                    }
+                </div>
+            </div>
+        }
+        <input asp-for="CoverFile" type="file" class="form-control" accept=".jpg,.jpeg,.png,.gif,.webp,.pdf" />
+        <div class="form-text">Новий файл замінить попереднє посилання. Якщо нічого не обрати, посилання лишиться</div>
+        <span asp-validation-for="CoverFile" class="text-danger"></span> 
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="SelectedAuthorIds" class="form-label"></label>
+        <select asp-for="SelectedAuthorIds" asp-items="Model.AuthorsOptions" class="form-select" multiple size="6"></select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="SelectedFeatureIds" class="form-label"></label>
+        <select asp-for="SelectedFeatureIds" asp-items="Model.FeaturesOptions" class="form-select" multiple size="6"></select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Зберегти</button>
+    <a asp-action="Index" class="btn btn-link">Назад</a>
+</form>

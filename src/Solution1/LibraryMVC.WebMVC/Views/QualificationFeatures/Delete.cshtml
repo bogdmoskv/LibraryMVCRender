@@ -1,0 +1,18 @@
+﻿@model LibraryMVC.Domain.Entities.QualificationFeature
+
+@{
+    ViewData["Title"] = "Видалення ознаки";
+}
+
+<h2>Видалити ознаку?</h2>
+
+<p>
+    <strong>@Model.Name</strong>
+</p>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <button type="submit" class="btn btn-danger">Видалити</button>
+    <a asp-action="Index" class="btn btn-link">Скасувати</a>
+</form>

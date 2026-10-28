@@ -1,0 +1,25 @@
+﻿@model LibraryMVC.Domain.Entities.Author
+
+@{
+    ViewData["Title"] = "Автор";
+}
+
+<h2>@Model.FullName</h2>
+
+<dl class="row">
+    <dt class="col-sm-3">Біографія</dt>
+    <dd cite="col-sm-9">@(Model.Biography ?? "-")</dd>
+
+    <dt class="col-sm-3">Видання</dt>
+    <dd class="col-sm-9">
+        <ul>
+            @foreach (var b in Model.Books)
+            {
+                <li>@b.Title (@b.PublicationYear)</li>
+            }
+        </ul>
+    </dd>
+</dl>
+
+<a asp-action="Edit" asp-route-id="@Model.Id">Змінити</a>
+<a asp-action="Index">Назад</a>

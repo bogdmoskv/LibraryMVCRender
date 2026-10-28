@@ -1,0 +1,32 @@
+﻿@model LibraryMVC.WebMVC.Models.LoanForm
+
+@{
+    ViewData["Title"] = "Нова видача";
+}
+
+<h2>Оформити видачу</h2>
+
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label class="form-label">Видання</label>
+        <select asp-for="BookId" class="form-select" asp-items="ViewBag.BookId"></select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Читач</label>
+        <select asp-for="ReaderId" class="form-select" asp-items="ViewBag.ReaderId"></select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Дата видачі</label>
+        <input asp-for="LoanDate" type="date" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Повернути до</label>
+        <input asp-for="DueDate" type="date" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Зберегти</button>
+    <a asp-action="Index" class="btn btn-link">Назад</a>
+</form>
