@@ -5,6 +5,12 @@ using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var port = Environment.GetEnvironmentVariable("PORT");
+if (!string.IsNullOrWhiteSpace(port))
+{
+    builder.WebHost.UseUrls($"http://+:{port}");
+}
+
 //Налаштування драйвера PostgreSQL (Npgsql) для роботи з даними. За замовчуванням Npgsql хоче DateTime лише в UTC.
 //З форм MVC часто приходить звичайна дата без UTC - і запис у БД може впасти з помилкою
 //EnableLegacyTimestampBehavior = true вмикає більш м'яку поведінку: дати з MVC-форм можна зберігати без обов'язкового Kind=Utc
