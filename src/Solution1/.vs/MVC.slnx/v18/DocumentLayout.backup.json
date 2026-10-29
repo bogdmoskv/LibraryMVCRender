@@ -3,12 +3,16 @@
   "WorkspaceRootPath": "D:\\\u0423\u0447\u0435\u043D\u0438\u043A\u0438_\u0434\u0435\u043A\u0430\u0431\u0440\u044C 2025\\Taras\\Taras_LB_0610\\3007\\src\\Solution1\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{2762BBE9-C759-4C86-A371-D9F31CC962D9}|LibraryMVC.WebMVC\\LibraryMVC.WebMVC.csproj|d:\\\u0443\u0447\u0435\u043D\u0438\u043A\u0438_\u0434\u0435\u043A\u0430\u0431\u0440\u044C 2025\\taras\\taras_lb_0610\\3007\\src\\solution1\\librarymvc.webmvc\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2762BBE9-C759-4C86-A371-D9F31CC962D9}|LibraryMVC.WebMVC\\LibraryMVC.WebMVC.csproj|solutionrelative:librarymvc.webmvc\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{2762BBE9-C759-4C86-A371-D9F31CC962D9}|LibraryMVC.WebMVC\\LibraryMVC.WebMVC.csproj|d:\\\u0443\u0447\u0435\u043D\u0438\u043A\u0438_\u0434\u0435\u043A\u0430\u0431\u0440\u044C 2025\\taras\\taras_lb_0610\\3007\\src\\solution1\\librarymvc.webmvc\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{2762BBE9-C759-4C86-A371-D9F31CC962D9}|LibraryMVC.WebMVC\\LibraryMVC.WebMVC.csproj|solutionrelative:librarymvc.webmvc\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{2762BBE9-C759-4C86-A371-D9F31CC962D9}|LibraryMVC.WebMVC\\LibraryMVC.WebMVC.csproj|d:\\\u0443\u0447\u0435\u043D\u0438\u043A\u0438_\u0434\u0435\u043A\u0430\u0431\u0440\u044C 2025\\taras\\taras_lb_0610\\3007\\src\\solution1\\librarymvc.webmvc\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{2762BBE9-C759-4C86-A371-D9F31CC962D9}|LibraryMVC.WebMVC\\LibraryMVC.WebMVC.csproj|solutionrelative:librarymvc.webmvc\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2762BBE9-C759-4C86-A371-D9F31CC962D9}|LibraryMVC.WebMVC\\LibraryMVC.WebMVC.csproj|d:\\\u0443\u0447\u0435\u043D\u0438\u043A\u0438_\u0434\u0435\u043A\u0430\u0431\u0440\u044C 2025\\taras\\taras_lb_0610\\3007\\src\\solution1\\librarymvc.webmvc\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2762BBE9-C759-4C86-A371-D9F31CC962D9}|LibraryMVC.WebMVC\\LibraryMVC.WebMVC.csproj|solutionrelative:librarymvc.webmvc\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{2762BBE9-C759-4C86-A371-D9F31CC962D9}|LibraryMVC.WebMVC\\LibraryMVC.WebMVC.csproj|d:\\\u0443\u0447\u0435\u043D\u0438\u043A\u0438_\u0434\u0435\u043A\u0430\u0431\u0440\u044C 2025\\taras\\taras_lb_0610\\3007\\src\\solution1\\librarymvc.webmvc\\controllers\\bookscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -43,6 +47,19 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "D:\\\u0423\u0447\u0435\u043D\u0438\u043A\u0438_\u0434\u0435\u043A\u0430\u0431\u0440\u044C 2025\\Taras\\Taras_LB_0610\\3007\\src\\Solution1\\LibraryMVC.WebMVC\\Views\\Home\\Index.cshtml",
+              "RelativeDocumentMoniker": "LibraryMVC.WebMVC\\Views\\Home\\Index.cshtml",
+              "ToolTip": "D:\\\u0423\u0447\u0435\u043D\u0438\u043A\u0438_\u0434\u0435\u043A\u0430\u0431\u0440\u044C 2025\\Taras\\Taras_LB_0610\\3007\\src\\Solution1\\LibraryMVC.WebMVC\\Views\\Home\\Index.cshtml",
+              "RelativeToolTip": "LibraryMVC.WebMVC\\Views\\Home\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-10-29T08:09:13.982Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "Program.cs",
               "DocumentMoniker": "D:\\\u0423\u0447\u0435\u043D\u0438\u043A\u0438_\u0434\u0435\u043A\u0430\u0431\u0440\u044C 2025\\Taras\\Taras_LB_0610\\3007\\src\\Solution1\\LibraryMVC.WebMVC\\Program.cs",
               "RelativeDocumentMoniker": "LibraryMVC.WebMVC\\Program.cs",
@@ -50,12 +67,11 @@
               "RelativeToolTip": "LibraryMVC.WebMVC\\Program.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-27T08:20:29.386Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-27T08:20:29.386Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "CoverFileService.cs",
               "DocumentMoniker": "D:\\\u0423\u0447\u0435\u043D\u0438\u043A\u0438_\u0434\u0435\u043A\u0430\u0431\u0440\u044C 2025\\Taras\\Taras_LB_0610\\3007\\src\\Solution1\\LibraryMVC.WebMVC\\Services\\CoverFileService.cs",
               "RelativeDocumentMoniker": "LibraryMVC.WebMVC\\Services\\CoverFileService.cs",
@@ -73,14 +89,13 @@
               "RelativeDocumentMoniker": "LibraryMVC.WebMVC\\appsettings.json",
               "ToolTip": "D:\\\u0423\u0447\u0435\u043D\u0438\u043A\u0438_\u0434\u0435\u043A\u0430\u0431\u0440\u044C 2025\\Taras\\Taras_LB_0610\\3007\\src\\Solution1\\LibraryMVC.WebMVC\\appsettings.json",
               "RelativeToolTip": "LibraryMVC.WebMVC\\appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAOAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-10-23T07:18:47.361Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-23T07:18:47.361Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "BooksController.cs",
               "DocumentMoniker": "D:\\\u0423\u0447\u0435\u043D\u0438\u043A\u0438_\u0434\u0435\u043A\u0430\u0431\u0440\u044C 2025\\Taras\\Taras_LB_0610\\3007\\src\\Solution1\\LibraryMVC.WebMVC\\Controllers\\BooksController.cs",
               "RelativeDocumentMoniker": "LibraryMVC.WebMVC\\Controllers\\BooksController.cs",
@@ -92,7 +107,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "Details.cshtml",
               "DocumentMoniker": "D:\\\u0423\u0447\u0435\u043D\u0438\u043A\u0438_\u0434\u0435\u043A\u0430\u0431\u0440\u044C 2025\\Taras\\Taras_LB_0610\\3007\\src\\Solution1\\LibraryMVC.WebMVC\\Views\\Books\\Details.cshtml",
               "RelativeDocumentMoniker": "LibraryMVC.WebMVC\\Views\\Books\\Details.cshtml",
@@ -104,7 +119,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "Index.cshtml",
               "DocumentMoniker": "D:\\\u0423\u0447\u0435\u043D\u0438\u043A\u0438_\u0434\u0435\u043A\u0430\u0431\u0440\u044C 2025\\Taras\\Taras_LB_0610\\3007\\src\\Solution1\\LibraryMVC.WebMVC\\Views\\Books\\Index.cshtml",
               "RelativeDocumentMoniker": "LibraryMVC.WebMVC\\Views\\Books\\Index.cshtml",
@@ -116,7 +131,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "Book.cs",
               "DocumentMoniker": "D:\\\u0423\u0447\u0435\u043D\u0438\u043A\u0438_\u0434\u0435\u043A\u0430\u0431\u0440\u044C 2025\\Taras\\Taras_LB_0610\\3007\\src\\Solution1\\LibraryMVC.Domain\\Entities\\Book.cs",
               "RelativeDocumentMoniker": "LibraryMVC.Domain\\Entities\\Book.cs",
