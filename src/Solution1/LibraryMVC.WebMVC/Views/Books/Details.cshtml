@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = Model.Title;
+    ViewData["DocumentTitle"] = Model.Title;
     ViewData["LandingPage"] = true;
 
     var authors = Model.Authors.OrderBy(a => a.FullName).ToList();
@@ -23,10 +24,83 @@
         : "У фонді, можна оформити видачу";
     var libraryEmail = "library@department.local";
     var mailLink = "mailto:" + libraryEmail + "?subject=" + Uri.EscapeDataString("Видання: " + Model.Title);
+
+    var flatAnnotation = string.Join(
+        " ",
+        annotation.Split(new[] { ' ', '\r', '\n', '\t' }, StringSplitOptions.RemoveEmptyEntries));
+    var metaDescription = flatAnnotation.Length > 160
+        ? flatAnnotation[..157].TrimEnd() + "…"
+        : flatAnnotation;
+    var canonical = $"{Context.Request.Scheme}://{Context.Request.Host}{Url.Action("Details", "Books", new { id = Model.Id })}";
+    var shareUrl = Uri.EscapeDataString(canonical);
+    var shareText = Uri.EscapeDataString(Model.Title);
+    string? ogImage = null;
+    if (hasCover && !isPdf)
+    {
+        ogImage = Model.CoverPath!.StartsWith("http", StringComparison.OrdinalIgnoreCase)
+            ? Model.CoverPath
+            : $"{Context.Request.Scheme}://{Context.Request.Host}{Model.CoverPath}";
+    }
+
+    var keywords = new List<string> { Model.Title, "кафедральна бібліотека", "видання" };
+    keywords.AddRange(authors.Select(author => author.FullName));
+    keywords.AddRange(features.Select(feature => feature.Name));
+    if (!string.IsNullOrWhiteSpace(Model.Publisher))
+    {
+        keywords.Add(Model.Publisher);
+    }
+
+    ViewData["Description"] = metaDescription;
+    ViewData["Keywords"] = string.Join(", ", keywords.Where(item => !string.IsNullOrWhiteSpace(item)).Distinct());
+    ViewData["Canonical"] = canonical;
+    ViewData["Robots"] = "index, follow";
+    ViewData["OgType"] = "book";
+    ViewData["OgImage"] = ogImage;
+    ViewData["OgIsbn"] = Model.Isbn;
+
+    var bookLd = new Dictionary<string, object?>
+    {
+        ["@context"] = "https://schema.org",
+        ["@type"] = "Book",
+        ["name"] = Model.Title,
+        ["description"] = flatAnnotation,
+        ["inLanguage"] = "uk",
+        ["datePublished"] = Model.PublicationYear.ToString(),
+        ["url"] = canonical
+    };
+    if (authors.Count > 0)
+    {
+        bookLd["author"] = authors
+            .Select(author => new Dictionary<string, string> { ["@type"] = "Person", ["name"] = author.FullName })
+            .ToList();
+    }
+    if (!string.IsNullOrWhiteSpace(Model.Isbn))
+    {
+        bookLd["isbn"] = Model.Isbn;
+    }
+    if (!string.IsNullOrWhiteSpace(Model.Publisher))
+    {
+        bookLd["publisher"] = new Dictionary<string, string> { ["@type"] = "Organization", ["name"] = Model.Publisher! };
+    }
+    if (ogImage != null)
+    {
+        bookLd["image"] = ogImage;
+    }
+
+    var jsonLd = System.Text.Json.JsonSerializer.Serialize(
+        bookLd,
+        new System.Text.Json.JsonSerializerOptions
+        {
+            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        }).Replace("<", "\\u003c", StringComparison.Ordinal);
 }
 
-<div class="book-landing">
-            <div class="row g-4">
+@section Head {
+    <script type="application/ld+json">@Html.Raw(jsonLd)</script>
+}
+
+<article class="book-landing">
+    <div class="row g-4">
         <div class="col-lg-8">
             <section id="overview" class="book-hero">
                 <div class="row align-items-center g-4">
@@ -89,7 +163,7 @@
                         </ul>
                         <div class="d-flex flex-wrap gap-2">
                             <a class="btn btn-library" href="#annotation">Читати анотацію</a>
-                            <a class="btn btn-outline-light" asp-controller="Loans" asp-action="Create" asp-route-bookId="@Model.Id">Оформити видачу</a>
+                            <a class="btn btn-outline-light" asp-controller="Loans" asp-action="Create" asp-route-id="@Model.Id">Взяти це видання</a>
                         </div>
                     </div>
                 </div>
@@ -109,6 +183,33 @@
             <section id="annotation" class="book-section">
                 <h2>Анотація</h2>
                 <p class="book-annotation">@annotation</p>
+                <p>
+                    Видання «@Model.Title» побачило світ @Model.PublicationYear року.
+                    Над текстом працювали @(authors.Count == 0 ? "автори, яких у картці ще не зазначено" : string.Join(", ", authors.Select(author => author.FullName))).
+                    Друковану версію випустило @(string.IsNullOrWhiteSpace(Model.Publisher) ? "видавництво, яке в картці не вказано" : $"видавництво «{Model.Publisher}»").
+                    У бібліографічному описі @(string.IsNullOrWhiteSpace(Model.Isbn) ? "номер ISBN не проставлено" : $"зазначено ISBN {Model.Isbn}").
+                </p>
+                <p>
+                    Кафедральна бібліотека прийняла цей примірник до фонду @Model.AddedAt.ToLocalTime().ToString("dd.MM.yyyy").
+                    Відтоді книгу видавали читачам @loanCount разів.
+                    @if (activeLoanCount > 0)
+                    {
+                        <text>Зараз вона на руках, тому наступний читач отримає її після повернення попереднього.</text>
+                    }
+                    else
+                    {
+                        <text>Зараз примірник є у фонді, і його можна оформити на абонементі без очікування.</text>
+                    }
+                </p>
+                <p>
+                    У каталозі видання описано такими кваліфікаційними ознаками:
+                    @(features.Count == 0 ? "окремих ознак ще не призначено" : string.Join(", ", features.Select(feature => feature.Name))).
+                    За цими ознаками кафедра добирає літературу для лекцій, практичних занять, курсових робіт і самостійної роботи студентів.
+                </p>
+                <p>
+                    Повний зміст передає анотація на початку розділу. На цій сторінці зібрано авторів, ознаки, рік, видавця та умови отримання, щоб не відкривати кілька карток каталогу.
+                    Контакти абонемента закріплені на екрані і лишаються видимими під час прокрутки, тож телефон і пошту не потрібно шукати внизу сторінки.
+                </p>
             </section>
 
             <section id="authors" class="book-section">
@@ -131,7 +232,7 @@
                                         <p class="card-text flex-grow-1">
                                             @(string.IsNullOrWhiteSpace(author.Biography) ? "Біографію в картці автора не заповнено." : author.Biography)
                                         </p>
-                                        <a class="btn btn-sm btn-outline-primary align-self-start" asp-controller="Authors" asp-action="Details" asp-route-id="@author.Id">Картка автора</a>
+                                        <a class="btn btn-sm btn-outline-primary align-self-start" asp-controller="Authors" asp-action="Details" asp-route-id="@author.Id">Біографія: @author.FullName</a>
                                     </div>
                                 </div>
                             </div>
@@ -161,7 +262,7 @@
                                         <p class="card-text flex-grow-1">
                                             @(string.IsNullOrWhiteSpace(feature.Description) ? "Опис ознаки не заповнено." : feature.Description)
                                         </p>
-                                        <a class="btn btn-sm btn-outline-primary align-self-start" asp-controller="QualificationFeatures" asp-action="Details" asp-route-id="@feature.Id">Картка ознаки</a>
+                                        <a class="btn btn-sm btn-outline-primary align-self-start" asp-controller="QualificationFeatures" asp-action="Details" asp-route-id="@feature.Id">Ознака «@feature.Name»</a>
                                     </div>
                                 </div>
                             </div>
@@ -187,7 +288,7 @@
                     <li class="list-group-item">Зверніться в абонемент. Телефон, пошта і години роботи закріплені на екрані і не зникають під час прокрутки.</li>
                     <li class="list-group-item">
                         Оформіть видачу цього видання в журналі бібліотеки.
-                        <a class="btn btn-sm btn-library ms-1" asp-controller="Loans" asp-action="Create" asp-route-bookId="@Model.Id">Оформити видачу</a>
+                        <a class="btn btn-sm btn-library ms-1" asp-controller="Loans" asp-action="Create" asp-route-id="@Model.Id">Перейти до журналу видач</a>
                     </li>
                 </ol>
             </section>
@@ -227,7 +328,16 @@
                             <dd class="col-sm-8">@(string.IsNullOrWhiteSpace(Model.Publisher) ? "—" : Model.Publisher)</dd>
 
                             <dt class="col-sm-4">ISBN</dt>
-                            <dd class="col-sm-8">@(string.IsNullOrWhiteSpace(Model.Isbn) ? "—" : Model.Isbn)</dd>
+                            <dd class="col-sm-8">
+                                @if (string.IsNullOrWhiteSpace(Model.Isbn))
+                                {
+                                    <span>—</span>
+                                }
+                                else
+                                {
+                                    <a href="https://www.worldcat.org/isbn/@Model.Isbn.Replace("-", "", StringComparison.Ordinal)" target="_blank" rel="noopener noreferrer">@Model.Isbn у WorldCat</a>
+                                }
+                            </dd>
 
                             <dt class="col-sm-4">Автори</dt>
                             <dd class="col-sm-8">@(authors.Count == 0 ? "—" : string.Join(", ", authors.Select(a => a.FullName)))</dd>
@@ -252,8 +362,15 @@
                         </dl>
                     </div>
                 </div>
+                <h3 class="h5 mt-4">Поділитися карткою</h3>
+                <p>Надішліть посилання на видання «@Model.Title», щоб його можна було відкрити без пошуку в каталозі.</p>
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    <a class="btn btn-outline-primary" href="https://t.me/share/url?url=@shareUrl&text=@shareText" target="_blank" rel="noopener noreferrer">Надіслати в Telegram</a>
+                    <a class="btn btn-outline-primary" href="https://www.facebook.com/sharer/sharer.php?u=@shareUrl" target="_blank" rel="noopener noreferrer">Поділитися у Facebook</a>
+                    <a class="btn btn-outline-secondary" href="https://uk.wikipedia.org/wiki/ISBN" target="_blank" rel="noopener noreferrer">Довідка про ISBN</a>
+                </div>
                 <div class="d-flex flex-wrap gap-2 mt-3">
-                    <a class="btn btn-primary" asp-action="Edit" asp-route-id="@Model.Id">Змінити</a>
+                    <a class="btn btn-primary" asp-action="Edit" asp-route-id="@Model.Id">Змінити картку</a>
                     <a class="btn btn-outline-secondary" asp-action="Index">До фонду</a>
                     <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@Model.Id">Видалити</a>
                 </div>
@@ -280,15 +397,15 @@
                     </dl>
                 </div>
                 <div class="card-footer bg-transparent">
-                    <a class="btn btn-library w-100" asp-controller="Loans" asp-action="Create" asp-route-bookId="@Model.Id">
-                        <span class="d-none d-lg-inline">Оформити видачу</span>
-                        <span class="d-lg-none">Видача</span>
+                    <a class="btn btn-library w-100" asp-controller="Loans" asp-action="Create" asp-route-id="@Model.Id">
+                        <span class="d-none d-lg-inline">Замовити в абонементі</span>
+                        <span class="d-lg-none">Замовити</span>
                     </a>
                 </div>
             </aside>
         </div>
     </div>
-</div>
+</article>
 
 @section Scripts {
     <script>

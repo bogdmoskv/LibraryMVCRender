@@ -3,6 +3,7 @@ using LibraryMVC.WebMVC.Filters;
 using LibraryMVC.WebMVC.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using Microsoft.AspNetCore.Http.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,6 +53,33 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+app.UseForwardedHeaders();
+
+var preferHttpsHost = !app.Environment.IsDevelopment();
+app.Use(async (context, next) =>
+{
+    var host = context.Request.Host.Host;
+    if (host.StartsWith("www.", StringComparison.OrdinalIgnoreCase))
+    {
+        var scheme = preferHttpsHost ? "https" : context.Request.Scheme;
+        var bareHost = context.Request.Host.Port is int port
+            ? new HostString(host[4..], port)
+            : new HostString(host[4..]);
+        var target = UriHelper.BuildAbsolute(
+            scheme,
+            bareHost,
+            context.Request.PathBase,
+            context.Request.Path,
+            context.Request.QueryString);
+        context.Response.Redirect(target, permanent: true);
+        return;
+    }
+
+    await next();
+});
+
+
 
 app.UseHttpsRedirection();
 app.UseRouting();

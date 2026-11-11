@@ -3,7 +3,45 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Кафедральна бібліотека</title>
+    @{
+        var documentTitle = ViewData["DocumentTitle"] as string;
+        if (string.IsNullOrWhiteSpace(documentTitle))
+        {
+            documentTitle = $"{ViewData["Title"]} - Кафедральна бібліотека";
+        }
+    }
+    <title>@documentTitle</title>
+    <link rel="icon" href="~/favicon.ico" type="image/x-icon" asp-append-version="true" />
+    <link rel="apple-touch-icon" href="~/apple-touch-icon.png" asp-append-version="true" />
+    @if (ViewData["Description"] is string seoDescription && !string.IsNullOrWhiteSpace(seoDescription))
+    {
+        <meta name="description" content="@seoDescription" />
+        <meta name="robots" content="@(ViewData["Robots"] as string ?? "index, follow")" />
+        @if (ViewData["Keywords"] is string seoKeywords && !string.IsNullOrWhiteSpace(seoKeywords))
+        {
+            <meta name="keywords" content="@seoKeywords" />
+        }
+        @if (ViewData["Canonical"] is string canonical && !string.IsNullOrWhiteSpace(canonical))
+        {
+            <link rel="canonical" href="@canonical" />
+            <link rel="alternate" hreflang="uk" href="@canonical" />
+            <meta property="og:url" content="@canonical" />
+        }
+        <meta property="og:locale" content="uk_UA" />
+        <meta property="og:site_name" content="Кафедральна бібліотека" />
+        <meta property="og:type" content="@(ViewData["OgType"] as string ?? "website")" />
+        <meta property="og:title" content="@ViewData["Title"] — Кафедральна бібліотека" />
+        <meta property="og:description" content="@seoDescription" />
+        @if (ViewData["OgImage"] is string ogImage && !string.IsNullOrWhiteSpace(ogImage))
+        {
+            <meta property="og:image" content="@ogImage" />
+        }
+        @if (ViewData["OgIsbn"] is string ogIsbn && !string.IsNullOrWhiteSpace(ogIsbn))
+        {
+            <meta property="book:isbn" content="@ogIsbn" />
+        }
+    }
+    @await RenderSectionAsync("Head", required: false)
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap_state.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
