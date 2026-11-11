@@ -183,3 +183,230 @@ body {
 .footer-note {
     color: var(--library-gold);
 }
+
+html:has(.book-landing){
+    scroll-behavior: smooth;
+}
+
+.book-hero {
+    background: linear-gradient(135deg, rgba(30, 58, 95, 0.96), rgba(21, 41, 63, 0.9));
+    color: #fff;
+    border-radius: 1rem;
+    padding: 1.75rem 1.5rem;
+    border: 1px solid rgba(196, 163, 90, 0.35);
+    box-shadow: 0 0.75rem 1.75rem rgba(21, 41, 63, 0.16);
+}
+
+.book-hero .lead{
+    color: rgba(255, 255, 255, 0.86);
+}
+
+.book-title {
+    font-size: clamp(1.6rem, 2.4vw, 2.35rem);
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.book-authors {
+    color: var(--library-gold);
+    font-weight: 600;
+}
+
+.book-feature-badge {
+    background: rgba(196, 163, 90, 0.18);
+    color: #f3e6c4;
+    border: 1px solid rgba(196, 163, 90, 0.5);
+    font-weight: 600;
+}
+
+.book-cover {
+    width: 100%;
+    max-height: 420px;
+    object-fit: contain;
+    background: rgba(255, 255, 255, 0.96);
+    border-radius: 0.75rem;
+}
+
+.book-cover-fallback {
+    min-height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.35rem 0.75rem 0.75rem 0.35rem;
+    background: linear-gradient(90deg, rgba(30, 58, 95, 0.2) 0 14px, transparent 14px), linear-gradient(180deg, #fffaf2, #f4e7cb);
+    color: var(--library-navy);
+    font-size: 3rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    border: 1px solid rgba(196, 163, 90, 0.85);
+    box-shadow: 0 0.6rem 1.2rem rgba(0, 0, 0, 0.18);
+}
+
+.book-cover-kicker{
+    font-size: 1.1rem;
+    letter-spacing:0.18em;
+}
+
+.book-section-nav {
+    background: var(--library-paper);
+    z-index: 1020;
+    padding-top: 0.75rem;
+    padding-bottom: 0.35rem;
+}
+
+.book-section-nav .nav-link {
+    color: var(--library-navy);
+    font-weight: 600;
+}
+
+.book-section-nav .nav-link.active{
+    background: var(--library-navy);
+    color: #fff;
+}
+
+.book-section {
+    padding: 1.5rem 0 0.5rem;
+    scroll-margin-top: 4.5rem;
+}
+
+.book-section h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--library-navy);
+    font-size: 1.45rem;
+    margin-bottom: 1rem;
+}
+
+.book-section h2::after {
+    content: "";
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(90deg, var(--library-gold), transparent);
+}
+
+.book-annotation {
+    font-size: 1.125rem;
+    line-height: 1.7;
+    white-space: pre-line;
+    background: #fff;
+    border-radius: 0.9rem;
+    padding: 1.25rem 1.35rem;
+    box-shadow: 0 0.4rem 1rem rgba(21, 41, 63, 0.08);
+    margin-bottom: 0;
+}
+
+.book-contacts {
+    top: 0.75rem;
+    border: 0;
+    border-radius: 0.9rem;
+    overflow: auto;
+    max-height: calc(100vh - 1.5rem);
+    box-shadow: 0 0.45rem 1.1rem rgba(21, 41, 63, 0.12);
+}
+
+.book-contacts .card-header {
+    background: var(--library-navy);
+    color: #fff;
+    border-bottom: 3px solid var(--library-gold);
+}
+
+.book-contacts-list dt {
+    margin-top: 0.7rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #6c6458;
+}
+
+.book-contacts-list dd{
+    margin-bottom: 0;
+}
+
+.book-contacts a {
+    color: var(--library-navy);
+    font-weight: 600;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+}
+
+.book-contacts a:hover{
+    text-decoration: underline;
+}
+
+.btn-library {
+    background: var(--library-gold);
+    border-color: var(--library-gold);
+    color: var(--library-navy-dark);
+    font-weight: 700;
+}
+
+.btn-library:hover,
+.btn-library:focus {
+    background: #d4b56a;
+    border-color: #d4b56a;
+    color: var(--library-navy-dark);
+}
+
+@media (max-width: 991.98px) {
+    .book-cover-fallback {
+        min-height: 210px;
+    }
+
+    .book-landing {
+        padding-bottom: 7.5rem;
+    }
+
+    body.book-landing-page .footer {
+        margin-bottom: 6.5rem;
+    }
+
+    .book-contacts {
+        position: fixed;
+        top: auto;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        max-height: none;
+        border-radius: 0;
+        z-index: 1030;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        overflow: visible;
+        border-top: 3px solid var(--library-gold);
+    }
+
+    .book-contacts .card-header,
+    .book-contacts-place {
+        display: none;
+    }
+
+    .book-contacts .card-body {
+        flex: 1 1 auto;
+        padding: 0.55rem 0.85rem;
+    }
+
+    .book-contacts .card-footer {
+        flex: 0 0 auto;
+        padding: 0.55rem 0.85rem 0.55rem 0;
+        border: 0;
+        background: transparent;
+    }
+
+    .book-contacts .card-footer .btn {
+        width: auto;
+        white-space: nowrap;
+    }
+
+    .book-contacts-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem 1rem;
+    }
+
+    .book-contacts-list dt {
+        display: none;
+    }
+}

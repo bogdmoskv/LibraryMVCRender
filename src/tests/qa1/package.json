@@ -1,0 +1,14 @@
+{
+    "name": "librarymvc-books-api-tests",
+    "private": true,
+    "description": "QA1: автоматичні тести REST API видань (Postman / Newman)",
+    "scripts": {
+        "test": "newman run LibraryMVC.BooksApi.postman_collection.json -e LibraryMVC.local.postman_environment.json --insecure --color on --timeout-request 10000",
+        "devDependencies": {
+            "newman": "^6.2.1"
+        }
+    },
+    "devDependencies": {
+        "newman": "^6.2.1"
+    }
+}

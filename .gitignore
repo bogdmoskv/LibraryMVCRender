@@ -5,3 +5,8 @@ obj/
 *.exe
 *.pdb
 .env
+
+src/Solution1/LibraryMVC.WebMVC/wwwroot/covers/*
+!src/Solution1/LibraryMVC.WebMVC/wwwroot/covers/.gitkeep
+
+node_modules/

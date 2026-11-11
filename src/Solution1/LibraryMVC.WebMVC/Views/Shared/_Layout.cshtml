@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/LibraryMVC.WebMVC.styles.css" asp-append-version="true" />
 </head>
-<body>
+<body class="@(ViewData["LandingPage"] as bool? == true ? "book-landing-page" : null)">
     @{
         var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
         var currentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? "";

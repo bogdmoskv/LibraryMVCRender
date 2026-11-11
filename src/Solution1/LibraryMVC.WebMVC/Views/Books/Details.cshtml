@@ -1,48 +1,303 @@
 ﻿@model LibraryMVC.Domain.Entities.Book
 
 @{
-    ViewData["Title"] = "Видання";
+    ViewData["Title"] = Model.Title;
+    ViewData["LandingPage"] = true;
+
+    var authors = Model.Authors.OrderBy(a => a.FullName).ToList();
+    var features = Model.Features.OrderBy(f => f.Name).ToList();
+    var loanCount = ViewData["LoanCount"] as int? ?? 0;
+    var activeLoanCount = ViewData["ActiveLoanCount"] as int? ?? 0;
+    var hasCover = !string.IsNullOrWhiteSpace(Model.CoverPath);
+    var isPdf = hasCover && Model.CoverPath!.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase);
+    var annotation = string.IsNullOrWhiteSpace(Model.Annotation)
+        ? "Анотацію для цього видання ще не додано."
+        : Model.Annotation.Trim();
+    var lead = annotation.Length > 220 ? annotation[..217].TrimEnd() + "…" : annotation;
+    var words = Model.Title.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+    var initials = words.Length == 0
+        ? "Кн"
+        : string.Concat(words.Take(2).Select(word => char.ToUpperInvariant(word[0])));
+    var availability = activeLoanCount > 0
+        ? $"Зараз на руках ({activeLoanCount})"
+        : "У фонді, можна оформити видачу";
+    var libraryEmail = "library@department.local";
+    var mailLink = "mailto:" + libraryEmail + "?subject=" + Uri.EscapeDataString("Видання: " + Model.Title);
 }
 
-<h2>@Model.Title</h2>
-
-<dl class="row">
-    <dt class="col-sm-3">Анотація</dt>
-    <dd class="col-sm-9">@Model.Annotation</dd>
-
-    <dt class="col-sm-3">Рік</dt>
-    <dd class="col-sm-9">@Model.PublicationYear</dd>
-
-    <dt class="col-sm-3">Видавець</dt>
-    <dd class="col-sm-9">@(Model.Publisher ?? "-")</dd>
-
-    <dt class="col-sm-3">ISBN</dt>
-    <dd class="col-sm-9">@(Model.Isbn ?? "-")</dd>
-
-    <dt class="col-sm-3">Файл (посилання)</dt>
-    <dd class="col-sm-9">
-        @if (string.IsNullOrEmpty(Model.CoverPath))
-        {
-            <span>-</span>
-        }
-        else
-        {
-            <a href="@Model.CoverPath" target="_blank">@Model.CoverPath</a>
-            @if (!Model.CoverPath.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
-            {
-                <div class="mt-2">
-                    <img src="@Model.CoverPath" alt="Обкладинка" class="img-thumbnail" style="max-height: 240px;" />
+<div class="book-landing">
+            <div class="row g-4">
+        <div class="col-lg-8">
+            <section id="overview" class="book-hero">
+                <div class="row align-items-center g-4">
+                    <div class="col-sm-5">
+                        @if (isPdf)
+                        {
+                            <div class="book-cover-fallback">
+                                <div class="text-center px-3">
+                                    <div class="book-cover-kicker">PDF</div>
+                                    <a class="btn btn-library mt-3" href="@Model.CoverPath" target="_blank" rel="noopener noreferrer">Відкрити файл</a>
+                                </div>
+                            </div>
+                        }
+                        else if (hasCover)
+                        {
+                            <img class="book-cover img-fluid shadow" src="@Model.CoverPath" alt="Обкладинка: @Model.Title"
+                                 onerror="this.classList.add('d-none'); this.nextElementSibling.classList.remove('d-none');" />
+                            <div class="book-cover-fallback d-none" aria-hidden="true"><span>@initials</span></div>
+                        }
+                        else
+                        {
+                            <div class="book-cover-fallback" aria-hidden="true"><span>@initials</span></div>
+                        }
+                        @if (hasCover && !isPdf)
+                        {
+                            <a class="btn btn-sm btn-outline-light mt-3" href="@Model.CoverPath" target="_blank" rel="noopener noreferrer">Відкрити файл</a>
+                        }
+                    </div>
+                    <div class="col-sm-7">
+                        <div class="d-flex flex-wrap gap-2 mb-3">
+                            @if (activeLoanCount > 0)
+                            {
+                                <span class="badge text-bg-warning">@availability</span>
+                            }
+                            else
+                            {
+                                <span class="badge text-bg-success">@availability</span>
+                            }
+                            <span class="badge text-bg-light text-dark">@Model.PublicationYear</span>
+                            @foreach (var feature in features)
+                            {
+                                <a class="badge book-feature-badge text-decoration-none" href="#features">@feature.Name</a>
+                            }
+                        </div>
+                        <h1 class="book-title mb-2">@Model.Title</h1>
+                        @if (authors.Count == 0)
+                        {
+                            <p class="book-authors mb-3">Автора не вказано</p>
+                        }
+                        else
+                        {
+                            <p class="mb-3">
+                                <a class="book-authors" href="#authors">@string.Join(", ", authors.Select(a => a.FullName))</a>
+                            </p>
+                        }
+                        <p class="lead">@lead</p>
+                        <ul class="list-inline mb-4">
+                            <li class="list-inline-item">@(string.IsNullOrWhiteSpace(Model.Publisher) ? "Видавця не вказано" : Model.Publisher)</li>
+                            <li class="list-inline-item">ISBN @(string.IsNullOrWhiteSpace(Model.Isbn) ? "—" : Model.Isbn)</li>
+                        </ul>
+                        <div class="d-flex flex-wrap gap-2">
+                            <a class="btn btn-library" href="#annotation">Читати анотацію</a>
+                            <a class="btn btn-outline-light" asp-controller="Loans" asp-action="Create" asp-route-bookId="@Model.Id">Оформити видачу</a>
+                        </div>
+                    </div>
                 </div>
-            }
+            </section>
+
+            <nav id="bookNav" class="book-section-nav navbar sticky-top navbar-expand px-0" aria-label="Розділи сторінки">
+                <ul class="navbar-nav nav nav-pills flex-wrap gap-2">
+                    <li class="nav-item"><a class="nav-link active" href="#overview">Огляд</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#annotation">Анотація</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#authors">Автори</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#features">Ознаки</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#obtain">Як отримати</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#record">Картка</a></li>
+                </ul>
+            </nav>
+
+            <section id="annotation" class="book-section">
+                <h2>Анотація</h2>
+                <p class="book-annotation">@annotation</p>
+            </section>
+
+            <section id="authors" class="book-section">
+                <h2>Автори</h2>
+                @if (authors.Count == 0)
+                {
+                    <div class="card panel-card">
+                        <div class="card-body text-secondary mb-0">Авторів для цього видання ще не вказано.</div>
+                    </div>
+                }
+                else
+                {
+                    <div class="row g-3">
+                        @foreach (var author in authors)
+                        {
+                            <div class="col-md-6">
+                                <div class="card panel-card h-100">
+                                    <div class="card-body d-flex flex-column">
+                                        <h3 class="h5 card-title">@author.FullName</h3>
+                                        <p class="card-text flex-grow-1">
+                                            @(string.IsNullOrWhiteSpace(author.Biography) ? "Біографію в картці автора не заповнено." : author.Biography)
+                                        </p>
+                                        <a class="btn btn-sm btn-outline-primary align-self-start" asp-controller="Authors" asp-action="Details" asp-route-id="@author.Id">Картка автора</a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </section>
+
+            <section id="features" class="book-section">
+                <h2>Кваліфікаційні ознаки</h2>
+                @if (features.Count == 0)
+                {
+                    <div class="card panel-card">
+                        <div class="card-body text-secondary mb-0">Ознак для цього видання ще не призначено.</div>
+                    </div>
+                }
+                else
+                {
+                    <div class="row g-3">
+                        @foreach (var feature in features)
+                        {
+                            <div class="col-md-6">
+                                <div class="card panel-card h-100">
+                                    <div class="stat-accent"></div>
+                                    <div class="card-body d-flex flex-column">
+                                        <h3 class="h5 card-title">@feature.Name</h3>
+                                        <p class="card-text flex-grow-1">
+                                            @(string.IsNullOrWhiteSpace(feature.Description) ? "Опис ознаки не заповнено." : feature.Description)
+                                        </p>
+                                        <a class="btn btn-sm btn-outline-primary align-self-start" asp-controller="QualificationFeatures" asp-action="Details" asp-route-id="@feature.Id">Картка ознаки</a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </section>
+
+            <section id="obtain" class="book-section">
+                <h2>Як отримати</h2>
+                <ol class="list-group list-group-numbered">
+                    <li class="list-group-item">Перегляньте анотацію, авторів і ознаки «@Model.Title» — усе це на одній сторінці.</li>
+                    <li class="list-group-item">
+                        @if (activeLoanCount > 0)
+                        {
+                            <text>Зараз видання на руках у читача. Нову видачу оформлюють після повернення.</text>
+                        }
+                        else
+                        {
+                            <text>Видання вільне — його можна взяти в абонементі.</text>
+                        }
+                    </li>
+                    <li class="list-group-item">Зверніться в абонемент. Телефон, пошта і години роботи закріплені на екрані і не зникають під час прокрутки.</li>
+                    <li class="list-group-item">
+                        Оформіть видачу цього видання в журналі бібліотеки.
+                        <a class="btn btn-sm btn-library ms-1" asp-controller="Loans" asp-action="Create" asp-route-bookId="@Model.Id">Оформити видачу</a>
+                    </li>
+                </ol>
+            </section>
+
+            <section id="record" class="book-section">
+                <h2>Картка видання</h2>
+                <div class="row g-3 mb-3">
+                    <div class="col-sm-6">
+                        <div class="card stat-card">
+                            <div class="stat-accent"></div>
+                            <div class="card-body text-center">
+                                <div class="stat-value">@loanCount</div>
+                                <div class="stat-label">Видач за весь час</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="card stat-card">
+                            <div class="stat-accent"></div>
+                            <div class="card-body text-center">
+                                <div class="stat-value">@activeLoanCount</div>
+                                <div class="stat-label">Зараз на руках</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card panel-card">
+                    <div class="card-body">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-4">Назва</dt>
+                            <dd class="col-sm-8">@Model.Title</dd>
+
+                            <dt class="col-sm-4">Рік</dt>
+                            <dd class="col-sm-8">@Model.PublicationYear</dd>
+
+                            <dt class="col-sm-4">Видавець</dt>
+                            <dd class="col-sm-8">@(string.IsNullOrWhiteSpace(Model.Publisher) ? "—" : Model.Publisher)</dd>
+
+                            <dt class="col-sm-4">ISBN</dt>
+                            <dd class="col-sm-8">@(string.IsNullOrWhiteSpace(Model.Isbn) ? "—" : Model.Isbn)</dd>
+
+                            <dt class="col-sm-4">Автори</dt>
+                            <dd class="col-sm-8">@(authors.Count == 0 ? "—" : string.Join(", ", authors.Select(a => a.FullName)))</dd>
+
+                            <dt class="col-sm-4">Ознаки</dt>
+                            <dd class="col-sm-8">@(features.Count == 0 ? "—" : string.Join(", ", features.Select(f => f.Name)))</dd>
+
+                            <dt class="col-sm-4">Файл</dt>
+                            <dd class="col-sm-8">
+                                @if (!hasCover)
+                                {
+                                    <span>—</span>
+                                }
+                                else
+                                {
+                                    <a class="text-break" href="@Model.CoverPath" target="_blank" rel="noopener noreferrer">@Model.CoverPath</a>
+                                }
+                            </dd>
+
+                            <dt class="col-sm-4">У фонді з</dt>
+                            <dd class="col-sm-8 mb-0">@Model.AddedAt.ToLocalTime().ToString("dd.MM.yyyy")</dd>
+                        </dl>
+                    </div>
+                </div>
+                <div class="d-flex flex-wrap gap-2 mt-3">
+                    <a class="btn btn-primary" asp-action="Edit" asp-route-id="@Model.Id">Змінити</a>
+                    <a class="btn btn-outline-secondary" asp-action="Index">До фонду</a>
+                    <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@Model.Id">Видалити</a>
+                </div>
+            </section>
+        </div>
+
+        <div class="col-lg-4">
+            <aside id="contacts" class="book-contacts card sticky-top align-self-start" aria-label="Контакти бібліотеки">
+                <div class="card-header">
+                    <div class="fw-bold">Контакти</div>
+                    <div class="small">Кафедральна бібліотека</div>
+                </div>
+                <div class="card-body">
+                    <p class="book-contacts-place mb-0">Абонемент і читальна зала</p>
+                    <dl class="book-contacts-list mb-0">
+                        <dt>Телефон</dt>
+                        <dd><a href="tel:+380440000000">+380 44 000 00 00</a></dd>
+                        <dt>Пошта</dt>
+                        <dd><a href="@mailLink">@libraryEmail</a></dd>
+                        <dt class="d-none d-lg-block">Адреса</dt>
+                        <dd class="d-none d-lg-block">ауд. 305, корпус 7</dd>
+                        <dt class="d-none d-lg-block">Години</dt>
+                        <dd class="d-none d-lg-block">Пн–Пт, 09:00–17:00</dd>
+                    </dl>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <a class="btn btn-library w-100" asp-controller="Loans" asp-action="Create" asp-route-bookId="@Model.Id">
+                        <span class="d-none d-lg-inline">Оформити видачу</span>
+                        <span class="d-lg-none">Видача</span>
+                    </a>
+                </div>
+            </aside>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        if (window.bootstrap && document.getElementById("bookNav")) {
+            new bootstrap.ScrollSpy(document.body, {
+                target: "#bookNav",
+                rootMargin: "0px 0px -60%",
+                smoothScroll: true
+            });
         }
-    </dd>
-
-    <dt class="col-sm-3">Автори</dt>
-    <dd class="col-sm-9">@string.Join(", ", Model.Authors.Select(a=>a.FullName))</dd>
-
-    <dt class="col-sm-3">Кваліфікаційні ознаки</dt>
-    <dd class="col-sm-9">@string.Join(", ", Model.Features.Select(a => a.Name))</dd>
-</dl>
-
-<a asp-action="Edit" asp-route-id="@Model.Id">Змінити</a>
-<a asp-action="Index" class="">Назад</a>
+    </script>
+}

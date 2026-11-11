@@ -1,4 +1,5 @@
 using LibraryMVC.Infrastructure;
+using LibraryMVC.WebMVC.Filters;
 using LibraryMVC.WebMVC.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
@@ -17,7 +18,12 @@ if (!string.IsNullOrWhiteSpace(port))
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add<ApiExceptionFilter>();
+})
+.AddXmlSerializerFormatters();
+
 builder.Services.AddSingleton<ICoverFileService,CoverFileService>();
 
 //Реєстрація контексту БД (підключаємо LibraryContext до Postgres за рядком з конфігу; міграції беремо з проєкту WebMVC)
