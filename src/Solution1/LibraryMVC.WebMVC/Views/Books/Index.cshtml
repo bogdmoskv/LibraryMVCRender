@@ -1,52 +1,112 @@
-﻿@model IEnumerable<LibraryMVC.Domain.Entities.Book>
+﻿@model BookPageViewModel
 
 @{
     ViewData["Title"] = "Видання";
 }
 
-<h2>Фонд видань</h2>
-
-<p>
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+    <h2 class="mb-0">Фонд видань</h2>
     <a class="btn btn-primary" asp-action="Create">Створити</a>
-</p>
+</div>
 
-<div class="table-responsive">
-    <table class="table table-striped table-hover align-middle">
-        <thead>
-            <tr>
-                <th>Назва</th>
-                <th>Рік</th>
-                <th>Файл</th>
-                <th>Автори</th>
-                <th>Ознаки</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
+<div class="book-list-card">
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle mb-0">
+            <thead>
                 <tr>
-                    <td>@item.Title</td>
-                    <td>@item.PublicationYear</td>
-                    <td>
-                        @if (string.IsNullOrEmpty(item.CoverPath))
+                    <th>Назва</th>
+                    <th>Рік</th>
+                    <th>Файл</th>
+                    <th>Автори</th>
+                    <th>Ознаки</th>
+                    <th>Дії</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Books.Count == 0)
+                {
+                    <tr>
+                        <td colspan="6" class="text-center text-secondary py-4">У фонді ще немає видань.</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var item in Model.Books)
+                    {
+                        <tr>
+                            <td>@item.Title</td>
+                            <td>@item.PublicationYear</td>
+                            <td>
+                                @if (string.IsNullOrEmpty(item.CoverPath))
+                                {
+                                    <span>—</span>
+                                }
+                                else
+                                {
+                                    <a href="@item.CoverPath" target="_blank">файл</a>
+                                }
+                            </td>
+                            <td>@string.Join(", ", item.Authors.Select(a => a.FullName))</td>
+                            <td>@string.Join(", ", item.Features.Select(a => a.Name))</td>
+                            <td class="text-nowrap">
+                                <a asp-action="Details" asp-route-id="@item.Id">Деталі</a> |
+                                <a asp-action="Edit" asp-route-id="@item.Id">Змінити</a> |
+                                <a asp-action="Delete" asp-route-id="@item.Id">Видалити</a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @if (Model.TotalCount > 0)
+    {
+        <div class="book-list-toolbar">
+            <p class="book-list-summary mb-0">
+                Показано @Model.RangeFrom–@Model.RangeTo з @Model.TotalCount
+            </p>
+            <nav class="book-pager" aria-label="Сторінки фонду">
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item @(Model.HasPrevious ? "" : "disabled")">
+                        @if (Model.HasPrevious)
                         {
-                            <span>-</span>
+                            <a class="page-link" asp-action="Index" asp-route-page="@(Model.Page - 1)">Назад</a>
                         }
                         else
                         {
-                            <a href="@item.CoverPath" target="_blank">файл</a>
+                            <span class="page-link">Назад</span>
                         }
-                    </td>
-                    <td>@string.Join(", ", item.Authors.Select(a => a.FullName))</td>
-                    <td>@string.Join(", ", item.Features.Select(a => a.Name))</td>
-                    <td>
-                        <a asp-action="Details" asp-route-id="@item.Id">Деталі</a> |
-                        <a asp-action="Edit" asp-route-id="@item.Id">Змінити</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Видалити</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+                    </li>
+                    @foreach (var number in Model.VisiblePages)
+                    {
+                        if (number is null)
+                        {
+                            <li class="page-item disabled" aria-hidden="true"><span class="page-link">…</span></li>
+                        }
+                        else if (number == Model.Page)
+                        {
+                            <li class="page-item active" aria-current="page"><span class="page-link">@number</span></li>
+                        }
+                        else
+                        {
+                            <li class="page-item">
+                                <a class="page-link" asp-action="Index" asp-route-page="@number">@number</a>
+                            </li>
+                        }
+                    }
+                    <li class="page-item @(Model.HasNext ? "" : "disabled")">
+                        @if (Model.HasNext)
+                        {
+                            <a class="page-link" asp-action="Index" asp-route-page="@(Model.Page + 1)">Далі</a>
+                        }
+                        else
+                        {
+                            <span class="page-link">Далі</span>
+                        }
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    }
 </div>

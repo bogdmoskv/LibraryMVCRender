@@ -73,3 +73,14 @@
         </a>
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/lib/chart.js/chart.umd.min.js" asp-append-version="true"></script>
+    <script src="~/js/library-charts.js" asp-append-version="true"></script>
+    <script>
+        LibraryCharts.bar("homeBooksByYear", "/api/Charts/booksByYear", "year", "count", "Видань", "Рік", "Кількість", true, false);
+        LibraryCharts.pie("homeReadersByFaculty", "/api/Charts/readersByFaculty", "name", "count", true, true);
+        LibraryCharts.pie("homeReadersByDepartment", "/api/Charts/readersByDepartment", "name", "count", true, true);
+        LibraryCharts.line("homeLoansByMonth", "/api/Charts/loansByMonth", "month", "count", "Видач", "Місяць", "Кількість", true);
+    </script>
+}

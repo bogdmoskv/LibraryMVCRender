@@ -19,15 +19,39 @@ namespace LibraryMVC.WebMVC.Controllers
             _covers = covers;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
+            if (page < 1)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var total = await _context.Books.CountAsync();
+            var totalPages = total == 0
+                ? 1
+                : (int)Math.Ceiling(total / (double)BookPageViewModel.PageSize);
+            if (page > totalPages)
+            {
+                return RedirectToAction(nameof(Index), new { page = totalPages });
+            }
+
             var books = await _context.Books
+                .AsNoTracking()
+                .AsSplitQuery()
                 .Include(b => b.Authors)
                 .Include(b => b.Features)
                 .OrderBy(b => b.Title)
+                .ThenBy(b => b.Id)
+                .Skip((page - 1) * BookPageViewModel.PageSize)
+                .Take(BookPageViewModel.PageSize)
                 .ToListAsync();
 
-            return View(books);
+            return View(new BookPageViewModel
+            {
+                Books = books,
+                Page = page,
+                TotalCount = total
+            });
         }
 
         public async Task<IActionResult> Details(int? id)

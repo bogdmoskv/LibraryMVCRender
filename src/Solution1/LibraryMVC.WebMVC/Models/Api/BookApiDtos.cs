@@ -50,3 +50,16 @@ public class ApiMessageDto
 {
     public string Message { get; set; } = string.Empty;
 }
+
+public class PagedBooksDto
+{
+    public int Skip { get; set; }
+
+    public int Limit { get; set; }
+
+    public int Count { get; set; }
+
+    public List<BookJsonDto> Items { get; set; } = [];
+
+    public string? NextLink { get; set; }
+}
