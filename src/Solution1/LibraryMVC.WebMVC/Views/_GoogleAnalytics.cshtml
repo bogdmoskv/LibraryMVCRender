@@ -1,0 +1,25 @@
+﻿@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@{
+    var measurementId = Configuration["GoogleAnalytics:MeasurementId"];
+}
+@if (!string.IsNullOrWhiteSpace(measurementId))
+{
+    <script async src="https://www.googletagmanager.com/gtag/js?id=@measurementId"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', '@measurementId');
+
+        // Кастомні події: trackEvent('book_created', { title: 'Назва' });
+        window.trackEvent = function (name, params) {
+            gtag('event', name, params || {});
+        };
+    </script>
+}
+else
+{
+    <script>
+        window.trackEvent = function () { };
+    </script>
+}

@@ -46,6 +46,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap_state.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/LibraryMVC.WebMVC.styles.css" asp-append-version="true" />
+    @await Html.PartialAsync("_GoogleAnalytics")
 </head>
 <body class="@(ViewData["LandingPage"] as bool? == true ? "book-landing-page" : null)">
     @{
