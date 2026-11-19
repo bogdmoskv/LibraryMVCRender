@@ -45,8 +45,9 @@ public class LoansController : Controller
         return View(loan);
     }
 
-    public async Task<IActionResult> Create(int? bookId)
+    public async Task<IActionResult> Create(int? bookId, int? id)
     {
+        bookId ??= id;
         await PopulateLookupsAsync(bookId);
         return View(new LoanForm
         {
@@ -85,7 +86,7 @@ public class LoansController : Controller
             return NotFound();
         }
 
-        await PopulateLookupsAsync(loan.BookId, loan.ReaderId);
+        await PopulateLookupsAsync(loan.BookId, loan.ReaderId, selectedOnly: true);
         return View(new LoanForm
         {
             Id = loan.Id,
@@ -108,7 +109,7 @@ public class LoansController : Controller
 
         if (!ModelState.IsValid)
         {
-            await PopulateLookupsAsync(model.BookId, model.ReaderId);
+            await PopulateLookupsAsync(model.BookId, model.ReaderId, selectedOnly: true);
             return View(model);
         }
 
@@ -158,17 +159,16 @@ public class LoansController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    private async Task PopulateLookupsAsync(int? bookId = null, int? readerId = null)
+    private async Task PopulateLookupsAsync(int? bookId = null, int? readerId = null, bool selectedOnly = false)
     {
-        ViewBag.BookId = new SelectList(
-            await _context.Books.OrderBy(b => b.Title).ToListAsync(),
-            "Id",
-            "Title",
-            bookId);
-        ViewBag.ReaderId = new SelectList(
-            await _context.Readers.OrderBy(r => r.FullName).ToListAsync(),
-            "Id",
-            "FullName",
-            readerId);
+        var books = selectedOnly
+            ? await _context.Books.AsNoTracking().Where(b => b.Id == bookId).OrderBy(b => b.Title).ToListAsync()
+            : await _context.Books.AsNoTracking().OrderBy(b => b.Title).ToListAsync();
+        var readers = selectedOnly
+            ? await _context.Readers.AsNoTracking().Where(r => r.Id == readerId).OrderBy(r => r.FullName).ToListAsync()
+            : await _context.Readers.AsNoTracking().OrderBy(r => r.FullName).ToListAsync();
+
+        ViewBag.BookId = new SelectList(books, "Id", "Title", bookId);
+        ViewBag.ReaderId = new SelectList(readers, "Id", "FullName", readerId);
     }
 }

@@ -12,7 +12,7 @@ namespace LibraryMVC.WebMVC.Controllers
     {
         private readonly LibraryContext _context;
         private readonly ICoverFileService _covers;
-       
+
         public BooksController(LibraryContext context, ICoverFileService covers)
         {
             _context = context;
@@ -70,6 +70,13 @@ namespace LibraryMVC.WebMVC.Controllers
                 return NotFound();
             }
 
+            var returnDates = await _context.Loans
+                .Where(l => l.BookId == book.Id)
+                .Select(l => l.ReturnDate)
+                .ToListAsync();
+            ViewData["LoanCount"] = returnDates.Count;
+            ViewData["ActiveLoanCount"] = returnDates.Count(d => d == null);
+
             return View(book);
         }
 
@@ -95,7 +102,7 @@ namespace LibraryMVC.WebMVC.Controllers
                 model.Publisher,
                 model.Isbn);
 
-            if (model.CoverFile is {  Length: > 0 })
+            if (model.CoverFile is { Length: > 0 })
             {
                 book.SetCoverPath(await _covers.SaveAsync(model.CoverFile));
             }
@@ -116,7 +123,7 @@ namespace LibraryMVC.WebMVC.Controllers
 
             _context.Add(book);
             await _context.SaveChangesAsync();
-            
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -149,7 +156,7 @@ namespace LibraryMVC.WebMVC.Controllers
                 SelectedFeatureIds = book.Features.Select(f => f.Id).ToList()
             };
 
-            return View(await BuildEditModelAsync(model));
+            return View(await BuildEditModelAsync(model, selectedOnly: true));
         }
 
         [HttpPost]
@@ -162,10 +169,9 @@ namespace LibraryMVC.WebMVC.Controllers
             }
 
             AddCoverErrors(model.CoverFile);
-
             if (!ModelState.IsValid)
             {
-                return View(await BuildEditModelAsync(model));
+                return View(await BuildEditModelAsync(model, selectedOnly: true));
             }
 
             var book = await _context.Books
@@ -256,13 +262,19 @@ namespace LibraryMVC.WebMVC.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private async Task<BookEditViewModel> BuildEditModelAsync(BookEditViewModel model)
+        private async Task<BookEditViewModel> BuildEditModelAsync(BookEditViewModel model, bool selectedOnly = false)
         {
             model.SelectedAuthorIds ??= new List<int>();
             model.SelectedFeatureIds ??= new List<int>();
 
-            var authors = await _context.Authors.OrderBy(a => a.FullName).ToListAsync();
-            var features = await _context.QualificationFeatures.OrderBy(f => f.Name).ToListAsync();
+            var authorsQuery = _context.Authors.AsNoTracking().OrderBy(a => a.FullName);
+            var featuresQuery = _context.QualificationFeatures.AsNoTracking().OrderBy(f => f.Name);
+            var authors = await (selectedOnly
+                ? authorsQuery.Where(a => model.SelectedAuthorIds.Contains(a.Id))
+                : authorsQuery).ToListAsync();
+            var features = await (selectedOnly
+                ? featuresQuery.Where(f => model.SelectedFeatureIds.Contains(f.Id))
+                : featuresQuery).ToListAsync();
 
             model.AuthorsOptions = authors
                 .Select(a => new SelectListItem
@@ -285,11 +297,10 @@ namespace LibraryMVC.WebMVC.Controllers
 
         private void AddCoverErrors(IFormFile? file)
         {
-           foreach (var error in _covers.GetValidationErrors(file))
+            foreach (var error in _covers.GetValidationErrors(file))
             {
                 ModelState.AddModelError(nameof(BookEditViewModel.CoverFile), error);
             }
         }
-
     }
 }
